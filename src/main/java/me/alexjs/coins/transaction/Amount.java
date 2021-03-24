@@ -1,14 +1,23 @@
 package me.alexjs.coins.transaction;
 
+import java.math.BigDecimal;
+
 public class Amount {
 
     private final long dollars;
     private final long cents;
 
+
     public Amount(long dollars, long cents) {
         validateValues(dollars, cents);
         this.dollars = dollars;
         this.cents = cents;
+    }
+
+    public Amount(String amountString) {
+        var big = new BigDecimal(amountString);
+        dollars = big.longValue();
+        cents = 0;
     }
 
     public Amount add(Amount other) {

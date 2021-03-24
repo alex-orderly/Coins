@@ -8,7 +8,6 @@ public abstract class Response {
     protected final String responseMessage;
     private final long timestamp;
 
-
     public Response(HttpStatus responseCode, String responseMessage) {
         this.timestamp = System.currentTimeMillis() / 1000L;
         this.responseCode = responseCode;

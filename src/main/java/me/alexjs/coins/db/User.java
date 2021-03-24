@@ -5,11 +5,12 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
-@Table(name = "USER", uniqueConstraints = {@UniqueConstraint(columnNames = "shortId")})
-public class UserDbo implements Serializable {
+@Table(name = "USER")
+public class User implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid2")
@@ -18,11 +19,8 @@ public class UserDbo implements Serializable {
     @Access(value = AccessType.FIELD)
     private UUID id;
 
-    @GeneratedValue(generator = "shortIdGenerator")
-    @GenericGenerator(name = "shortIdGenerator", strategy = "me.alexjs.coins.db.ShortIdGenerator")
-    @Column(name = "shortId", columnDefinition = "CHAR(7)")
-    @NotNull
-    private String shortId;
+    @OneToMany(mappedBy = "user")
+    private List<Account> accounts;
 
     @Column(name = "first_name")
     @NotNull
@@ -40,7 +38,10 @@ public class UserDbo implements Serializable {
     @NotNull
     private String passwordHash;
 
-    public UserDbo(String firstName, String lastName, String userName, String passwordHash) {
+    User() {
+    }
+
+    public User(String firstName, String lastName, String userName, String passwordHash) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.userName = userName;
@@ -77,10 +78,6 @@ public class UserDbo implements Serializable {
 
     public String getPasswordHash() {
         return passwordHash;
-    }
-
-    public void setPasswordHash(String passwordHash) {
-        this.passwordHash = passwordHash;
     }
 
 }
