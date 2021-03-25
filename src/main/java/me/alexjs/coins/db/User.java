@@ -30,9 +30,9 @@ public class User implements Serializable {
     @NotNull
     private String lastName;
 
-    @Column(name = "user_name")
+    @Column(name = "username", unique = true)
     @NotNull
-    private String userName;
+    private String username;
 
     @Column(name = "pass_hash")
     @NotNull
@@ -41,10 +41,10 @@ public class User implements Serializable {
     User() {
     }
 
-    public User(String firstName, String lastName, String userName, String passwordHash) {
+    public User(String firstName, String lastName, String username, String passwordHash) {
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userName = userName;
+        this.username = username;
         this.passwordHash = passwordHash;
     }
 
@@ -68,12 +68,12 @@ public class User implements Serializable {
         this.lastName = lastName;
     }
 
-    public String getUserName() {
-        return userName;
+    public String getUsername() {
+        return username;
     }
 
-    public void setUserName(String userName) {
-        this.userName = userName;
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public String getPasswordHash() {

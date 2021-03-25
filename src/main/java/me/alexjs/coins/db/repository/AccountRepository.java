@@ -9,6 +9,6 @@ import java.util.UUID;
 
 public interface AccountRepository extends JpaRepository<Account, UUID> {
 
-    public List<Account> findByUser(User user);
+    List<Account> findByUser(User user);
 
 }

@@ -1,13 +1,12 @@
 package me.alexjs.coins.db;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import me.alexjs.coins.transaction.Amount;
-import me.alexjs.coins.transaction.TransactionType;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.UUID;
 
 @Entity
@@ -34,37 +33,18 @@ public class Transaction implements Serializable {
     @NotNull
     private TransactionType type;
 
-    @Column(name = "dollars")
+    @Column(name = "amount")
     @NotNull
-    private Long dollarAmount;
-
-    @Column(name = "cents")
-    @NotNull
-    private Long centAmount;
-
-    @Transient
-    private Amount amount;
+    private BigDecimal amount;
 
     Transaction() {
     }
 
-    public Transaction(Account account, String description, TransactionType type, Amount amount) {
-        this.id = id;
+    public Transaction(Account account, String description, TransactionType type, BigDecimal amount) {
         this.account = account;
         this.description = description;
         this.type = type;
         this.amount = amount;
-    }
-
-    @PrePersist
-    void fillPersistent() {
-        dollarAmount = amount.getDollars();
-        centAmount = amount.getCents();
-    }
-
-    @PostLoad
-    void fillTransient() {
-        amount = new Amount(dollarAmount, centAmount);
     }
 
     public UUID getId() {
@@ -83,7 +63,7 @@ public class Transaction implements Serializable {
         return type;
     }
 
-    public Amount getAmount() {
+    public BigDecimal getAmount() {
         return amount;
     }
 

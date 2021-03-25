@@ -6,8 +6,6 @@ import me.alexjs.coins.db.repository.AccountRepository;
 import me.alexjs.coins.db.repository.UserRepository;
 import me.alexjs.coins.request.CreateAccountRequest;
 import me.alexjs.coins.request.CreateUserRequest;
-import me.alexjs.coins.response.CreateAccountResponse;
-import me.alexjs.coins.response.CreateUserResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,51 +24,58 @@ public class UserController implements UserApi {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    @Autowired
     private UserRepository userRepository;
-
-    @Autowired
     private AccountRepository accountRepository;
 
+    @Autowired
+    public UserController(UserRepository userRepository, AccountRepository accountRepository) {
+        this.userRepository = userRepository;
+        this.accountRepository = accountRepository;
+    }
+
     @Override
-    public CreateUserResponse createUser(CreateUserRequest request) {
-        log.info("Received request: CreateUserRequest");
+    public void createUser(CreateUserRequest request) {
+        log.info("Received request: POST /create");
+
+        // TODO actually hash the password
+        String passwordHash = request.getPassword();
 
         User user = new User(
                 request.getFirstName(),
                 request.getLastName(),
-                request.getUserName(),
-                request.getBase64HashedPassword());
+                request.getUsername(),
+                passwordHash);
+
+        if (userRepository.existsByUsername(request.getUsername())) {
+            throw new CoinsException(HttpStatus.BAD_REQUEST, "Could not create user: This username is taken");
+        }
 
         userRepository.save(user);
-
-        return new CreateUserResponse(HttpStatus.OK);
     }
 
     @Override
-    public CreateAccountResponse createAccount(String userName, CreateAccountRequest request) {
-        log.info("Received request: CreateAccountRequest");
+    public Map<UUID, String> createAccount(String username, CreateAccountRequest request) {
+        log.info("Received request: POST /accounts");
 
-        User user = userRepository.findByUserName(userName);
+        User user = userRepository.findByUsername(username);
         String name = request.getName();
         Account account = new Account(user, name);
 
         accountRepository.save(account);
 
-        return new CreateAccountResponse(HttpStatus.OK);
+        return Map.of(account.getId(), name);
     }
 
     @Override
-    public Map<UUID, String> listAccounts(String userName) {
-        log.info("Received request: ListAccountsRequest");
+    public Map<UUID, String> listAccounts(String username) {
+        log.info("Received request: GET /accounts");
 
-        User user = userRepository.findByUserName(userName);
+        User user = userRepository.findByUsername(username);
         List<Account> accounts = accountRepository.findByUser(user);
 
         Map<UUID, String> accountMap = accounts.stream().collect(Collectors.toMap(Account::getId, Account::getName));
 
         return accountMap;
     }
-
 
 }

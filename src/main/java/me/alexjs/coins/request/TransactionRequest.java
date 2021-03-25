@@ -1,9 +1,9 @@
 package me.alexjs.coins.request;
 
-public abstract class TransactionRequest {
+public class TransactionRequest {
 
-    protected final String description;
-    protected final String amount;
+    private final String description;
+    private final String amount;
 
     public TransactionRequest(String description, String amount) {
         this.description = description;
