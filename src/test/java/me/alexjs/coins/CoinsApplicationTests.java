@@ -1,10 +1,10 @@
-package me.alexjs.ServerTest;
+package me.alexjs.coins;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class ServerTestApplicationTests {
+class CoinsApplicationTests {
 
     @Test
     void contextLoads() {
