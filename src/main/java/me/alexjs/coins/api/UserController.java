@@ -34,7 +34,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public void createUser(CreateUserRequest request) {
+    public User createUser(CreateUserRequest request) {
         log.info("Received request: POST /create");
 
         // TODO actually hash the password
@@ -51,6 +51,8 @@ public class UserController implements UserApi {
         }
 
         userRepository.save(user);
+
+        return user;
     }
 
     @Override
@@ -58,6 +60,10 @@ public class UserController implements UserApi {
         log.info("Received request: POST /accounts");
 
         User user = userRepository.findByUsername(username);
+        if(user == null) {
+            throw new CoinsException(HttpStatus.BAD_REQUEST, "This user does not exist: " + username);
+        }
+
         String name = request.getName();
         Account account = new Account(user, name);
 
@@ -71,6 +77,10 @@ public class UserController implements UserApi {
         log.info("Received request: GET /accounts");
 
         User user = userRepository.findByUsername(username);
+        if(user == null) {
+            throw new CoinsException(HttpStatus.BAD_REQUEST, "This user does not exist: " + username);
+        }
+
         List<Account> accounts = accountRepository.findByUser(user);
 
         Map<UUID, String> accountMap = accounts.stream().collect(Collectors.toMap(Account::getId, Account::getName));

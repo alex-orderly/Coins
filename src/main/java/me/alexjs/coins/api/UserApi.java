@@ -1,5 +1,6 @@
 package me.alexjs.coins.api;
 
+import me.alexjs.coins.db.User;
 import me.alexjs.coins.request.CreateAccountRequest;
 import me.alexjs.coins.request.CreateUserRequest;
 import org.springframework.web.bind.annotation.*;
@@ -11,7 +12,7 @@ import java.util.UUID;
 public interface UserApi {
 
     @PostMapping
-    void createUser(@RequestBody CreateUserRequest request);
+    User createUser(@RequestBody CreateUserRequest request);
 
     @PostMapping("{username}/accounts")
     Map<UUID, String> createAccount(@PathVariable("username") String username,

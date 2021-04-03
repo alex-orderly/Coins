@@ -7,6 +7,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.sql.Timestamp;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -37,15 +40,26 @@ public class Transaction implements Serializable {
     @NotNull
     private BigDecimal amount;
 
+    @Column(name = "total")
+    @NotNull
+    private BigDecimal total;
+
+    @Embedded
+    private TransactionAudit audit;
+
     Transaction() {
     }
 
-    public Transaction(Account account, String description, TransactionType type, BigDecimal amount) {
+    public Transaction(Account account, String description, TransactionType type, BigDecimal amount, BigDecimal oldBalance) {
         this.account = account;
         this.description = description;
         this.type = type;
-        this.amount = amount;
+        this.amount = amount.setScale(6, RoundingMode.HALF_UP);
+        this.total = oldBalance;
+        this.audit = new TransactionAudit();
     }
+
+    /* GETTERS */
 
     public UUID getId() {
         return id;
@@ -64,7 +78,28 @@ public class Transaction implements Serializable {
     }
 
     public BigDecimal getAmount() {
-        return amount;
+        return amount.setScale(6, RoundingMode.HALF_UP);
+    }
+
+    public BigDecimal getTotal() {
+        return total;
+    }
+
+    public TransactionAudit getAudit() {
+        return audit;
+    }
+
+    /* SETTERS */
+
+    public void updateTotal(TransactionType type, BigDecimal amount) {
+        switch(type) {
+            case DEPOSIT:
+                total = total.add(amount).setScale(6, RoundingMode.HALF_UP);
+                break;
+            case WITHDRAWAL:
+                total = total.subtract(amount).setScale(6, RoundingMode.HALF_UP);
+                break;
+        }
     }
 
 }
