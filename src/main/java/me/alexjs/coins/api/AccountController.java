@@ -1,5 +1,7 @@
 package me.alexjs.coins.api;
 
+import me.alexjs.coins.api.util.CoinsException;
+import me.alexjs.coins.api.util.CoinsResponse;
 import me.alexjs.coins.db.Account;
 import me.alexjs.coins.db.Transaction;
 import me.alexjs.coins.db.TransactionType;
@@ -10,7 +12,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,85 +41,57 @@ public class AccountController implements AccountApi {
     public BigDecimal getBalance(String accountId) {
         log.info("Received request: GET /balance");
 
-        Account account;
+        Account account = getAccountById(accountId);
         try {
-            account = accountRepository.findById(UUID.fromString(accountId)).orElseThrow();
-        } catch (NoSuchElementException e) {
-            throw new CoinsException(HttpStatus.BAD_REQUEST, "This account does not exist: " + accountId);
-        }
-
-        BigDecimal balance;
-        try {
-            balance = transactionRepository.findTopByAccountOrderByAudit_CreatedAtDesc(account).getTotal();
+            return transactionRepository.findTopByAccountOrderByAudit_CreatedAtDesc(account).getTotal();
         } catch (NullPointerException e) {
             return BigDecimal.ZERO;
         }
-
-        return balance;
     }
 
     @Override
     public List<Transaction> listTransactions(String accountId) {
         log.info("Received request: GET /transactions");
 
-        Account account;
-        try {
-            account = accountRepository.findById(UUID.fromString(accountId)).orElseThrow();
-        } catch (NoSuchElementException e) {
-            throw new CoinsException(HttpStatus.BAD_REQUEST, "This account does not exist: " + accountId);
-        }
-
-        List<Transaction> transactions = transactionRepository.findByAccount(account);
-
-        return transactions;
+        Account account = getAccountById(accountId);
+        return transactionRepository.findByAccount(account);
     }
 
     @Override
     public void createDeposit(String accountId, TransactionRequest request) {
         log.info("Received request: POST /deposits");
 
-        Account account;
-        try {
-            account = accountRepository.findById(UUID.fromString(accountId)).orElseThrow();
-        } catch (NoSuchElementException e) {
-            throw new CoinsException(HttpStatus.BAD_REQUEST, "This account does not exist: " + accountId);
-        }
-
-        String description = request.getDescription();
-        TransactionType type = TransactionType.DEPOSIT;
-        BigDecimal amount = convertAmount(request.getAmount());
-        BigDecimal oldBalance = getBalance(accountId);
-
-        Transaction transaction = new Transaction(account, description, type, amount, oldBalance);
-        transaction.updateTotal(TransactionType.DEPOSIT, amount);
-
-        transactionRepository.save(transaction);
-
-        updateRunningTotalsAfter(account, transaction);
+        createTransaction(accountId, request, TransactionType.DEPOSIT);
     }
 
     @Override
     public void createWithdrawal(String accountId, TransactionRequest request) {
         log.info("Received request: POST /withdrawals");
 
-        Account account;
-        try {
-            account = accountRepository.findById(UUID.fromString(accountId)).orElseThrow();
-        } catch (NoSuchElementException e) {
-            throw new CoinsException(HttpStatus.BAD_REQUEST, "This account does not exist: " + accountId);
-        }
+        createTransaction(accountId, request, TransactionType.WITHDRAWAL);
+    }
+
+    private void createTransaction(String accountId, TransactionRequest request, TransactionType type) {
+        Account account = getAccountById(accountId);
 
         String description = request.getDescription();
-        TransactionType type = TransactionType.WITHDRAWAL;
         BigDecimal amount = convertAmount(request.getAmount());
         BigDecimal oldBalance = getBalance(accountId);
 
         Transaction transaction = new Transaction(account, description, type, amount, oldBalance);
-        transaction.updateTotal(TransactionType.WITHDRAWAL, amount);
+        transaction.updateTotal(type, amount);
 
         transactionRepository.save(transaction);
 
         updateRunningTotalsAfter(account, transaction);
+    }
+
+    private Account getAccountById(String accountId) {
+        try {
+            return accountRepository.findById(UUID.fromString(accountId)).orElseThrow();
+        } catch (NoSuchElementException e) {
+            throw new CoinsException(CoinsResponse.INVALID_ACCOUNT, accountId);
+        }
     }
 
     private void updateRunningTotalsAfter(Account account, Transaction transaction) {
