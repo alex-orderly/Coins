@@ -5,53 +5,50 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.List;
+import java.sql.Timestamp;
 import java.util.UUID;
 
 @Entity
-@Table(name = "ACCOUNT")
-public class Account implements Serializable {
+@Table(name = "API_TOKEN")
+public class ApiToken implements Serializable {
 
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
     @Column(name = "id", columnDefinition = "BINARY(16)")
-    @NotNull
     private UUID id;
 
     @OneToOne
     @NotNull
     private User user;
 
-    @OneToMany(mappedBy = "account")
-    private List<Transaction> transactions;
-
-    @Column(name = "name")
+    @Column(name = "token")
     @NotNull
-    private String name;
+    private String token;
 
-    Account() {
+    @Column(name = "expire_at")
+    @NotNull
+    private Timestamp expireAt;
+
+    ApiToken() {
     }
 
-    public Account(User user, String name) {
+    public ApiToken(User user, String token, Timestamp expireAt) {
         this.user = user;
-        this.name = name;
-    }
-
-    public UUID getId() {
-        return id;
+        this.token = token;
+        this.expireAt = expireAt;
     }
 
     public User getUser() {
         return user;
     }
 
-    public List<Transaction> getTransactions() {
-        return transactions;
+    public String getToken() {
+        return token;
     }
 
-    public String getName() {
-        return name;
+    public Timestamp getExpireAt() {
+        return expireAt;
     }
 
 }

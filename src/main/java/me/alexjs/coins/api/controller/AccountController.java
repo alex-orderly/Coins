@@ -1,5 +1,6 @@
-package me.alexjs.coins.api;
+package me.alexjs.coins.api.controller;
 
+import me.alexjs.coins.api.AccountApi;
 import me.alexjs.coins.api.util.CoinsException;
 import me.alexjs.coins.api.util.CoinsResponse;
 import me.alexjs.coins.db.Account;
@@ -7,7 +8,7 @@ import me.alexjs.coins.db.Transaction;
 import me.alexjs.coins.db.TransactionType;
 import me.alexjs.coins.db.repository.AccountRepository;
 import me.alexjs.coins.db.repository.TransactionRepository;
-import me.alexjs.coins.request.TransactionRequest;
+import me.alexjs.coins.api.request.TransactionRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

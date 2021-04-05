@@ -1,6 +1,8 @@
 package me.alexjs.coins.db;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -20,7 +22,12 @@ public class User implements Serializable {
     private UUID id;
 
     @OneToMany(mappedBy = "user")
+    @JsonIgnore
     private List<Account> accounts;
+
+    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    private List<ApiToken> apiTokens;
 
     @Column(name = "first_name")
     @NotNull
@@ -52,28 +59,24 @@ public class User implements Serializable {
         return id;
     }
 
-    public String getFirstName() {
-        return firstName;
+    public List<Account> getAccounts() {
+        return accounts;
     }
 
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
+    public List<ApiToken> getApiTokens() {
+        return apiTokens;
+    }
+
+    public String getFirstName() {
+        return firstName;
     }
 
     public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-    }
-
     public String getUsername() {
         return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
     }
 
     public String getPasswordHash() {

@@ -1,13 +1,14 @@
-package me.alexjs.coins.api;
+package me.alexjs.coins.api.controller;
 
+import me.alexjs.coins.api.UserApi;
 import me.alexjs.coins.api.util.CoinsException;
 import me.alexjs.coins.api.util.CoinsResponse;
 import me.alexjs.coins.db.Account;
 import me.alexjs.coins.db.User;
 import me.alexjs.coins.db.repository.AccountRepository;
 import me.alexjs.coins.db.repository.UserRepository;
-import me.alexjs.coins.request.CreateAccountRequest;
-import me.alexjs.coins.request.CreateUserRequest;
+import me.alexjs.coins.api.request.CreateAccountRequest;
+import me.alexjs.coins.api.request.CreateUserRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,21 +37,20 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public User createUser(CreateUserRequest request) {
+    public User createUser(String username, CreateUserRequest request) {
         log.info("Received request: POST /create");
 
-        // TODO actually hash the password
         String passwordHash = hashAndEncode(request.getPassword());
+
+        if (userRepository.existsByUsername(username)) {
+            throw new CoinsException(CoinsResponse.USERNAME_TAKEN, username);
+        }
 
         User user = new User(
                 request.getFirstName(),
                 request.getLastName(),
-                request.getUsername(),
+                username,
                 passwordHash);
-
-        if (userRepository.existsByUsername(request.getUsername())) {
-            throw new CoinsException(CoinsResponse.USERNAME_TAKEN, request.getUsername());
-        }
 
         userRepository.save(user);
 

@@ -11,8 +11,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     public void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests()
-                .anyRequest()
-                .permitAll();
+                .mvcMatchers("/users/create").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .headers().frameOptions().disable()
+                .and()
+                .csrf().disable();
     }
 
 }

@@ -1,4 +1,4 @@
-package me.alexjs.coins.request;
+package me.alexjs.coins.api.request;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 

@@ -1,7 +1,7 @@
 package me.alexjs.coins.api;
 
 import me.alexjs.coins.db.Transaction;
-import me.alexjs.coins.request.TransactionRequest;
+import me.alexjs.coins.api.request.TransactionRequest;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
