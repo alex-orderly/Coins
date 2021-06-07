@@ -1,4 +1,4 @@
-package me.alexjs.coins.api.controller;
+package me.alexjs.coins.controller;
 
 import me.alexjs.coins.api.CoinsApi;
 import me.alexjs.coins.api.util.CoinsException;
@@ -12,13 +12,12 @@ import me.alexjs.coins.db.repository.UserRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.security.Principal;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.Base64;
 import java.util.UUID;
 
 @RestController
@@ -46,22 +45,12 @@ public class CoinsController implements CoinsApi {
     }
 
     @Override
-    public String createToken(String auth) {
-        log.info("Received request: POST /token");
+    public String createToken(Principal principal) {
 
-        String encodedAuthToken = auth.split(" ")[1];
-
-        String[] authToken = new String(Base64.getDecoder().decode(encodedAuthToken)).split(":");
-        String username = authToken[0];
-        String password = authToken[1];
+        String username = principal.getName();
 
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new CoinsException(CoinsResponse.BAD_AUTH);
-        }
-
-        String hash = user.getPasswordHash();
-        if(!BCrypt.checkpw(password, hash)) {
             throw new CoinsException(CoinsResponse.BAD_AUTH);
         }
 
@@ -71,6 +60,7 @@ public class CoinsController implements CoinsApi {
         apiTokenRepository.save(apiToken);
 
         return apiTokenString;
+
     }
 
 }

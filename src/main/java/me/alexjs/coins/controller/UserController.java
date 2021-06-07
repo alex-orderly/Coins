@@ -1,14 +1,13 @@
-package me.alexjs.coins.api.controller;
+package me.alexjs.coins.controller;
 
 import me.alexjs.coins.api.UserApi;
+import me.alexjs.coins.api.dto.*;
 import me.alexjs.coins.api.util.CoinsException;
 import me.alexjs.coins.api.util.CoinsResponse;
 import me.alexjs.coins.db.Account;
 import me.alexjs.coins.db.User;
 import me.alexjs.coins.db.repository.AccountRepository;
 import me.alexjs.coins.db.repository.UserRepository;
-import me.alexjs.coins.api.request.CreateAccountRequest;
-import me.alexjs.coins.api.request.CreateUserRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,10 +15,10 @@ import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api/users")
@@ -27,8 +26,8 @@ public class UserController implements UserApi {
 
     private static final Logger log = LoggerFactory.getLogger(UserController.class);
 
-    private UserRepository userRepository;
-    private AccountRepository accountRepository;
+    private final UserRepository userRepository;
+    private final AccountRepository accountRepository;
 
     @Autowired
     public UserController(UserRepository userRepository, AccountRepository accountRepository) {
@@ -37,8 +36,7 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public User createUser(String username, CreateUserRequest request) {
-        log.info("Received request: POST /create");
+    public CreateUserResponse createUser(String username, CreateUserRequest request) {
 
         String passwordHash = hashAndEncode(request.getPassword());
 
@@ -54,15 +52,15 @@ public class UserController implements UserApi {
 
         userRepository.save(user);
 
-        return user;
+        return new CreateUserResponse(user.getUsername(), user.getFirstName(), user.getLastName());
+
     }
 
     @Override
-    public Map<UUID, String> createAccount(String username, CreateAccountRequest request) {
-        log.info("Received request: POST /accounts");
+    public CreateAccountResponse createAccount(String username, CreateAccountRequest request) {
 
         User user = userRepository.findByUsername(username);
-        if(user == null) {
+        if (user == null) {
             throw new CoinsException(CoinsResponse.INVALID_USER, username);
         }
 
@@ -71,23 +69,27 @@ public class UserController implements UserApi {
 
         accountRepository.save(account);
 
-        return Map.of(account.getId(), name);
+        return new CreateAccountResponse(account.getId(), account.getName());
+
     }
 
     @Override
-    public Map<UUID, String> listAccounts(String username) {
-        log.info("Received request: GET /accounts");
+    public ListAccountsResponse listAccounts(String username) {
 
         User user = userRepository.findByUsername(username);
-        if(user == null) {
+        if (user == null) {
             throw new CoinsException(CoinsResponse.INVALID_USER, username);
         }
 
         List<Account> accounts = accountRepository.findByUser(user);
 
-        Map<UUID, String> accountMap = accounts.stream().collect(Collectors.toMap(Account::getId, Account::getName));
+        Map<UUID, String> accountMap = new HashMap<>();
+        for (Account account : accounts) {
+            accountMap.put(account.getId(), account.getName());
+        }
 
-        return accountMap;
+        return new ListAccountsResponse(accountMap);
+
     }
 
     private String hashAndEncode(String password) {

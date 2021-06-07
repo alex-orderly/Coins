@@ -1,10 +1,16 @@
-package me.alexjs.coins.api.request;
+package me.alexjs.coins.api.dto;
+
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class TransactionRequest {
 
-    private final String description;
-    private final String amount;
+    private String description;
+    private String amount;
 
+    public TransactionRequest() {
+    }
+
+    @JsonCreator
     public TransactionRequest(String description, String amount) {
         this.description = description;
         this.amount = amount;

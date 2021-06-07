@@ -1,10 +1,13 @@
-package me.alexjs.coins.api.request;
+package me.alexjs.coins.api.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 
 public class CreateAccountRequest {
 
-    private final String name;
+    private String name;
+
+    public CreateAccountRequest() {
+    }
 
     @JsonCreator
     public CreateAccountRequest(String name) {
