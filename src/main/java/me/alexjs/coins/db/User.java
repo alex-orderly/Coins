@@ -25,10 +25,6 @@ public class User implements Serializable {
     @JsonIgnore
     private List<Account> accounts;
 
-    @OneToMany(mappedBy = "user")
-    @JsonIgnore
-    private List<ApiToken> apiTokens;
-
     @Column(name = "first_name")
     @NotNull
     private String firstName;
@@ -61,10 +57,6 @@ public class User implements Serializable {
 
     public List<Account> getAccounts() {
         return accounts;
-    }
-
-    public List<ApiToken> getApiTokens() {
-        return apiTokens;
     }
 
     public String getFirstName() {

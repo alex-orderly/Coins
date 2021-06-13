@@ -1,4 +1,4 @@
-package me.alexjs.coins.api.util;
+package me.alexjs.coins.api.dto;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

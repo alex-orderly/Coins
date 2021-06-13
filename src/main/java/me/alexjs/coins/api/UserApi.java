@@ -13,6 +13,9 @@ public interface UserApi {
     CreateUserResponse createUser(@PathVariable("username") String username,
                                   @RequestBody CreateUserRequest request);
 
+    @GetMapping("{username}")
+    GetUserResponse getUser(@PathVariable("username") String username);
+
     @PostMapping("{username}/accounts")
     CreateAccountResponse createAccount(@PathVariable("username") String username,
                                         @RequestBody CreateAccountRequest request);

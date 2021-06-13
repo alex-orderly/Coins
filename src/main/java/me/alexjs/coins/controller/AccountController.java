@@ -2,8 +2,6 @@ package me.alexjs.coins.controller;
 
 import me.alexjs.coins.api.AccountApi;
 import me.alexjs.coins.api.dto.*;
-import me.alexjs.coins.api.util.CoinsException;
-import me.alexjs.coins.api.util.CoinsResponse;
 import me.alexjs.coins.db.Account;
 import me.alexjs.coins.db.Transaction;
 import me.alexjs.coins.db.TransactionType;
@@ -18,9 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api/accounts/{accountId}")
@@ -51,7 +47,9 @@ public class AccountController implements AccountApi {
     @Override
     public ListTransactionsResponse listTransactions(String accountId) {
         Account account = getAccountById(accountId);
-        return new ListTransactionsResponse(transactionRepository.findByAccount(account));
+        List<Transaction> transactions = transactionRepository.findByAccount(account);
+        transactions.sort(Comparator.comparing(t -> t.getAudit().getCreatedAt()));
+        return new ListTransactionsResponse(transactions);
     }
 
     @Override
@@ -102,7 +100,7 @@ public class AccountController implements AccountApi {
             return;
         }
 
-        for(Transaction newer : transactionsToUpdate) {
+        for (Transaction newer : transactionsToUpdate) {
             newer.updateTotal(transaction.getType(), transaction.getAmount());
             transactionRepository.save(newer);
         }

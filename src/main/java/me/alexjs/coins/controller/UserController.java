@@ -2,16 +2,14 @@ package me.alexjs.coins.controller;
 
 import me.alexjs.coins.api.UserApi;
 import me.alexjs.coins.api.dto.*;
-import me.alexjs.coins.api.util.CoinsException;
-import me.alexjs.coins.api.util.CoinsResponse;
 import me.alexjs.coins.db.Account;
 import me.alexjs.coins.db.User;
 import me.alexjs.coins.db.repository.AccountRepository;
 import me.alexjs.coins.db.repository.UserRepository;
+import me.alexjs.coins.util.PasswordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,17 +26,19 @@ public class UserController implements UserApi {
 
     private final UserRepository userRepository;
     private final AccountRepository accountRepository;
+    private final PasswordUtil passwordUtil;
 
     @Autowired
-    public UserController(UserRepository userRepository, AccountRepository accountRepository) {
+    public UserController(UserRepository userRepository, AccountRepository accountRepository, PasswordUtil passwordUtil) {
         this.userRepository = userRepository;
         this.accountRepository = accountRepository;
+        this.passwordUtil = passwordUtil;
     }
 
     @Override
     public CreateUserResponse createUser(String username, CreateUserRequest request) {
 
-        String passwordHash = hashAndEncode(request.getPassword());
+        String passwordHash = passwordUtil.hashAndEncode(request.getPassword());
 
         if (userRepository.existsByUsername(username)) {
             throw new CoinsException(CoinsResponse.USERNAME_TAKEN, username);
@@ -54,6 +54,12 @@ public class UserController implements UserApi {
 
         return new CreateUserResponse(user.getUsername(), user.getFirstName(), user.getLastName());
 
+    }
+
+    @Override
+    public GetUserResponse getUser(String username) {
+        User user = userRepository.findByUsername(username);
+        return new GetUserResponse(user.getUsername(), user.getFirstName(), user.getLastName(), user.getPasswordHash());
     }
 
     @Override
@@ -90,10 +96,6 @@ public class UserController implements UserApi {
 
         return new ListAccountsResponse(accountMap);
 
-    }
-
-    private String hashAndEncode(String password) {
-        return BCrypt.hashpw(password, BCrypt.gensalt());
     }
 
 }
