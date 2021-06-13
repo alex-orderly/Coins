@@ -2,6 +2,7 @@ package me.alexjs.coins.controller;
 
 import me.alexjs.coins.api.AccountApi;
 import me.alexjs.coins.api.dto.*;
+import me.alexjs.coins.api.dto.body.*;
 import me.alexjs.coins.db.Account;
 import me.alexjs.coins.db.Transaction;
 import me.alexjs.coins.db.TransactionType;
@@ -57,7 +58,7 @@ public class AccountController implements AccountApi {
         for(var transaction : transactions) {
             dtos.add(new TransactionDto(transaction.getType().getLabel(), transaction.getAmount(), transaction.getAudit().getCreatedAt().toInstant()));
         }
-        dtos.sort(Comparator.comparing(TransactionDto::getTimestamp));
+        dtos.sort(Comparator.comparing(TransactionDto::timestamp));
 
         return new ListTransactionsResponse(dtos);
 

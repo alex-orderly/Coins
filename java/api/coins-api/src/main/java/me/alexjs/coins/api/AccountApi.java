@@ -1,6 +1,6 @@
 package me.alexjs.coins.api;
 
-import me.alexjs.coins.api.dto.*;
+import me.alexjs.coins.api.dto.body.*;
 
 public interface AccountApi {
 

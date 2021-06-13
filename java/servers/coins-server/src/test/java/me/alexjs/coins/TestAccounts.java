@@ -3,8 +3,7 @@ package me.alexjs.coins;
 import me.alexjs.coins.api.AccountApi;
 import me.alexjs.coins.api.UserApi;
 import me.alexjs.coins.api.dto.TransactionDto;
-import me.alexjs.coins.api.dto.TransactionRequest;
-import me.alexjs.coins.db.Transaction;
+import me.alexjs.coins.api.dto.body.TransactionRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,11 +45,11 @@ class TestAccounts extends CoinsTest {
         List<TransactionDto> transactions = accountClient.listTransactions(accountId).getTransactions();
         Assertions.assertEquals(5, transactions.size());
 
-        Assertions.assertEquals(AMOUNT_1, transactions.get(0).getAmount().doubleValue());
-        Assertions.assertEquals(AMOUNT_3, transactions.get(1).getAmount().doubleValue());
-        Assertions.assertEquals(AMOUNT_3, transactions.get(2).getAmount().doubleValue());
-        Assertions.assertEquals(AMOUNT_2, transactions.get(3).getAmount().doubleValue());
-        Assertions.assertEquals(AMOUNT_2, transactions.get(4).getAmount().doubleValue());
+        Assertions.assertEquals(AMOUNT_1, transactions.get(0).amount().doubleValue());
+        Assertions.assertEquals(AMOUNT_3, transactions.get(1).amount().doubleValue());
+        Assertions.assertEquals(AMOUNT_3, transactions.get(2).amount().doubleValue());
+        Assertions.assertEquals(AMOUNT_2, transactions.get(3).amount().doubleValue());
+        Assertions.assertEquals(AMOUNT_2, transactions.get(4).amount().doubleValue());
     }
 
 }

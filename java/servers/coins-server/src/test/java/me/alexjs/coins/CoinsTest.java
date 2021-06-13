@@ -2,8 +2,8 @@ package me.alexjs.coins;
 
 import me.alexjs.coins.api.AccountApi;
 import me.alexjs.coins.api.UserApi;
-import me.alexjs.coins.api.dto.CreateAccountRequest;
-import me.alexjs.coins.api.dto.CreateUserRequest;
+import me.alexjs.coins.api.dto.body.CreateAccountRequest;
+import me.alexjs.coins.api.dto.body.CreateUserRequest;
 
 import java.util.UUID;
 

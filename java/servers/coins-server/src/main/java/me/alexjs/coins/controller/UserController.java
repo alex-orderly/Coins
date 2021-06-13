@@ -1,7 +1,7 @@
 package me.alexjs.coins.controller;
 
 import me.alexjs.coins.api.UserApi;
-import me.alexjs.coins.api.dto.*;
+import me.alexjs.coins.api.dto.body.*;
 import me.alexjs.coins.db.Account;
 import me.alexjs.coins.db.User;
 import me.alexjs.coins.db.repository.AccountRepository;

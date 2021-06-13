@@ -1,4 +1,4 @@
-package me.alexjs.coins.api.dto;
+package me.alexjs.coins.api.dto.body;
 
 import java.math.BigDecimal;
 

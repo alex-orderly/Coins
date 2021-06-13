@@ -2,7 +2,7 @@ package me.alexjs.coins;
 
 import me.alexjs.coins.api.AccountApi;
 import me.alexjs.coins.api.UserApi;
-import me.alexjs.coins.api.dto.*;
+import me.alexjs.coins.api.dto.body.*;
 import me.alexjs.coins.util.PasswordUtil;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
