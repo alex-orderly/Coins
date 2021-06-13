@@ -2,6 +2,7 @@ package me.alexjs.coins;
 
 import me.alexjs.coins.api.AccountApi;
 import me.alexjs.coins.api.UserApi;
+import me.alexjs.coins.api.dto.TransactionDto;
 import me.alexjs.coins.api.dto.TransactionRequest;
 import me.alexjs.coins.db.Transaction;
 import org.junit.jupiter.api.Assertions;
@@ -42,7 +43,7 @@ class TestAccounts extends CoinsTest {
         double balance = accountClient.getBalance(accountId).getBalance().doubleValue();
         Assertions.assertEquals(AMOUNT_1 + AMOUNT_3 + AMOUNT_3 - AMOUNT_2 - AMOUNT_2, balance);
 
-        List<Transaction> transactions = accountClient.listTransactions(accountId).getTransactions();
+        List<TransactionDto> transactions = accountClient.listTransactions(accountId).getTransactions();
         Assertions.assertEquals(5, transactions.size());
 
         Assertions.assertEquals(AMOUNT_1, transactions.get(0).getAmount().doubleValue());

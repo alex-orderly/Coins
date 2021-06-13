@@ -1,7 +1,5 @@
 package me.alexjs.coins.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 import java.util.UUID;
 
 public class CreateAccountResponse {
@@ -12,7 +10,6 @@ public class CreateAccountResponse {
     public CreateAccountResponse() {
     }
 
-    @JsonCreator
     public CreateAccountResponse(UUID id, String name) {
         this.id = id;
         this.name = name;

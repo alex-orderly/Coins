@@ -10,8 +10,7 @@ import me.alexjs.coins.util.PasswordUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
@@ -36,12 +35,14 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public CreateUserResponse createUser(String username, CreateUserRequest request) {
+    @PostMapping("{username}")
+    public CreateUserResponse createUser(@PathVariable("username") String username,
+                                         @RequestBody CreateUserRequest request) {
 
         String passwordHash = passwordUtil.hashAndEncode(request.getPassword());
 
         if (userRepository.existsByUsername(username)) {
-            throw new CoinsException(CoinsResponse.USERNAME_TAKEN, username);
+            throw new IllegalArgumentException("This username is taken: " + username);
         }
 
         User user = new User(
@@ -57,17 +58,20 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public GetUserResponse getUser(String username) {
+    @GetMapping("{username}")
+    public GetUserResponse getUser(@PathVariable("username") String username) {
         User user = userRepository.findByUsername(username);
         return new GetUserResponse(user.getUsername(), user.getFirstName(), user.getLastName(), user.getPasswordHash());
     }
 
     @Override
-    public CreateAccountResponse createAccount(String username, CreateAccountRequest request) {
+    @PostMapping("{username}/accounts")
+    public CreateAccountResponse createAccount(@PathVariable("username") String username,
+                                               @RequestBody CreateAccountRequest request) {
 
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new CoinsException(CoinsResponse.INVALID_USER, username);
+            throw new IllegalArgumentException("This user does not exist: " + username);
         }
 
         String name = request.getName();
@@ -80,11 +84,12 @@ public class UserController implements UserApi {
     }
 
     @Override
-    public ListAccountsResponse listAccounts(String username) {
+    @GetMapping("{username}/accounts")
+    public ListAccountsResponse listAccounts(@PathVariable("username") String username) {
 
         User user = userRepository.findByUsername(username);
         if (user == null) {
-            throw new CoinsException(CoinsResponse.INVALID_USER, username);
+            throw new IllegalArgumentException("This user does not exist: " + username);
         }
 
         List<Account> accounts = accountRepository.findByUser(user);

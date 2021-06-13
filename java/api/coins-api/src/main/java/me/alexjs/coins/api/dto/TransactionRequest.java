@@ -1,7 +1,5 @@
 package me.alexjs.coins.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 public class TransactionRequest {
 
     private String description;
@@ -10,7 +8,6 @@ public class TransactionRequest {
     public TransactionRequest() {
     }
 
-    @JsonCreator
     public TransactionRequest(String description, String amount) {
         this.description = description;
         this.amount = amount;

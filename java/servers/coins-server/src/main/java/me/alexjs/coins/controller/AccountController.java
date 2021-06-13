@@ -11,8 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.InvalidDataAccessResourceUsageException;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -35,33 +34,53 @@ public class AccountController implements AccountApi {
     }
 
     @Override
-    public GetBalanceResponse getBalance(String accountId) {
+    @GetMapping("/balance")
+    public GetBalanceResponse getBalance(@PathVariable("accountId") String accountId) {
+
         Account account = getAccountById(accountId);
         try {
             return new GetBalanceResponse(transactionRepository.findTopByAccountOrderByAudit_CreatedAtDesc(account).getTotal());
         } catch (NullPointerException e) {
             return new GetBalanceResponse(BigDecimal.ZERO);
         }
+
     }
 
     @Override
-    public ListTransactionsResponse listTransactions(String accountId) {
+    @GetMapping("/transactions")
+    public ListTransactionsResponse listTransactions(@PathVariable("accountId") String accountId) {
+
         Account account = getAccountById(accountId);
         List<Transaction> transactions = transactionRepository.findByAccount(account);
-        transactions.sort(Comparator.comparing(t -> t.getAudit().getCreatedAt()));
-        return new ListTransactionsResponse(transactions);
+
+        List<TransactionDto> dtos = new ArrayList<>();
+        for(var transaction : transactions) {
+            dtos.add(new TransactionDto(transaction.getType().getLabel(), transaction.getAmount(), transaction.getAudit().getCreatedAt().toInstant()));
+        }
+        dtos.sort(Comparator.comparing(TransactionDto::getTimestamp));
+
+        return new ListTransactionsResponse(dtos);
+
     }
 
     @Override
-    public CreateDepositResponse createDeposit(String accountId, TransactionRequest request) {
+    @PostMapping("/deposits")
+    public CreateDepositResponse createDeposit(@PathVariable("accountId") String accountId,
+                                               @RequestBody TransactionRequest request) {
+
         createTransaction(accountId, request, TransactionType.DEPOSIT);
         return new CreateDepositResponse();
+
     }
 
     @Override
-    public CreateWithdrawalResponse createWithdrawal(String accountId, TransactionRequest request) {
+    @PostMapping("/withdrawals")
+    public CreateWithdrawalResponse createWithdrawal(@PathVariable("accountId") String accountId,
+                                                     @RequestBody TransactionRequest request) {
+
         createTransaction(accountId, request, TransactionType.WITHDRAWAL);
         return new CreateWithdrawalResponse();
+
     }
 
     private void createTransaction(String accountId, TransactionRequest request, TransactionType type) {
@@ -82,13 +101,11 @@ public class AccountController implements AccountApi {
     }
 
     private Account getAccountById(String accountId) {
-
         try {
             return accountRepository.findById(UUID.fromString(accountId)).orElseThrow();
         } catch (NoSuchElementException e) {
-            throw new CoinsException(CoinsResponse.INVALID_ACCOUNT, accountId);
+            throw new IllegalArgumentException("This account does not exist: " + accountId);
         }
-
     }
 
     private void updateRunningTotalsAfter(Account account, Transaction transaction) {

@@ -1,7 +1,5 @@
 package me.alexjs.coins.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
 import java.math.BigDecimal;
 
 public class GetBalanceResponse {
@@ -11,7 +9,6 @@ public class GetBalanceResponse {
     public GetBalanceResponse() {
     }
 
-    @JsonCreator
     public GetBalanceResponse(BigDecimal balance) {
         this.balance = balance;
     }

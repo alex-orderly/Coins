@@ -1,21 +1,20 @@
 package me.alexjs.coins.api.dto;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
-
-public class CreateUserResponse {
+public class GetUserResponse {
 
     private String username;
     private String firstName;
     private String lastName;
+    private String passwordHash;
 
-    public CreateUserResponse() {
+    public GetUserResponse() {
     }
 
-    @JsonCreator
-    public CreateUserResponse(String username, String firstName, String lastName) {
+    public GetUserResponse(String username, String firstName, String lastName, String passwordHash) {
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
+        this.passwordHash = passwordHash;
     }
 
     public String getUsername() {
@@ -28,6 +27,10 @@ public class CreateUserResponse {
 
     public String getLastName() {
         return lastName;
+    }
+
+    public String getPasswordHash() {
+        return passwordHash;
     }
 
 }
