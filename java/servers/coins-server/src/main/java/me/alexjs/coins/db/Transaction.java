@@ -19,7 +19,7 @@ public class Transaction implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "id", columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "BINARY(16)")
     private UUID id;
 
     @OneToOne
@@ -27,20 +27,20 @@ public class Transaction implements Serializable {
     @JsonIgnore
     private Account account;
 
-    @Column(name = "description")
+    @Column
     @NotNull
     private String description;
 
-    @Column(name = "type")
+    @Column
     @Enumerated(EnumType.STRING)
     @NotNull
     private TransactionType type;
 
-    @Column(name = "amount")
+    @Column
     @NotNull
     private BigDecimal amount;
 
-    @Column(name = "total")
+    @Column
     @NotNull
     private BigDecimal total;
 

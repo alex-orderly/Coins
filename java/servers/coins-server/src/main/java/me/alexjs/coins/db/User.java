@@ -17,27 +17,27 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "id", columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "BINARY(16)")
     @Access(value = AccessType.FIELD)
     private UUID id;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany
     @JsonIgnore
     private List<Account> accounts;
 
-    @Column(name = "first_name")
+    @Column
     @NotNull
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column
     @NotNull
     private String lastName;
 
-    @Column(name = "user_name", unique = true)
+    @Column(unique = true)
     @NotNull
     private String username;
 
-    @Column(name = "pass_hash")
+    @Column
     @NotNull
     private String passwordHash;
 

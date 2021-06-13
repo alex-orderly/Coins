@@ -15,7 +15,7 @@ public class Account implements Serializable {
     @Id
     @GeneratedValue(generator = "uuid2")
     @GenericGenerator(name = "uuid2", strategy = "uuid2")
-    @Column(name = "id", columnDefinition = "BINARY(16)")
+    @Column(columnDefinition = "BINARY(16)")
     @NotNull
     private UUID id;
 
@@ -26,7 +26,7 @@ public class Account implements Serializable {
     @OneToMany(mappedBy = "account")
     private List<Transaction> transactions;
 
-    @Column(name = "name")
+    @Column
     @NotNull
     private String name;
 
