@@ -32,7 +32,7 @@ public abstract class CoinsTest {
         CreateUserRequest userRequest = new CreateUserRequest(FIRST_NAME, LAST_NAME, PASSWORD);
         userClient.createUser(USERNAME, userRequest);
         CreateAccountRequest accountRequest = new CreateAccountRequest(ACCOUNT_NAME_1);
-        return userClient.createAccount(USERNAME, accountRequest).getId();
+        return userClient.createAccount(USERNAME, accountRequest).id();
     }
 
 }

@@ -38,9 +38,9 @@ class TestUsers extends CoinsTest {
     public void testCreateUser() {
         CreateUserResponse userResponse = createUser();
 
-        Assertions.assertEquals(USERNAME, userResponse.getUsername());
-        Assertions.assertEquals(FIRST_NAME, userResponse.getFirstName());
-        Assertions.assertEquals(LAST_NAME, userResponse.getLastName());
+        Assertions.assertEquals(USERNAME, userResponse.username());
+        Assertions.assertEquals(FIRST_NAME, userResponse.firstName());
+        Assertions.assertEquals(LAST_NAME, userResponse.lastName());
     }
 
     @Test
@@ -48,9 +48,9 @@ class TestUsers extends CoinsTest {
         createUser();
         GetUserResponse user = userClient.getUser(USERNAME);
 
-        Assertions.assertEquals(FIRST_NAME, user.getFirstName());
-        Assertions.assertEquals(LAST_NAME, user.getLastName());
-        Assertions.assertTrue(passwordUtil.checkPassword(PASSWORD, user.getPasswordHash()));
+        Assertions.assertEquals(FIRST_NAME, user.firstName());
+        Assertions.assertEquals(LAST_NAME, user.lastName());
+        Assertions.assertTrue(passwordUtil.checkPassword(PASSWORD, user.passwordHash()));
     }
 
     @Test
@@ -60,8 +60,8 @@ class TestUsers extends CoinsTest {
 
         CreateAccountRequest request = new CreateAccountRequest(ACCOUNT_NAME_1);
 
-        CreateAccountResponse account = userClient.createAccount(user.getUsername(), request);
-        Assertions.assertEquals(request.getName(), account.getName());
+        CreateAccountResponse account = userClient.createAccount(user.username(), request);
+        Assertions.assertEquals(request.name(), account.name());
     }
 
     @Test
@@ -71,13 +71,13 @@ class TestUsers extends CoinsTest {
 
         CreateAccountRequest request1 = new CreateAccountRequest(ACCOUNT_NAME_1);
         CreateAccountRequest request2 = new CreateAccountRequest(ACCOUNT_NAME_2);
-        CreateAccountResponse account1 = userClient.createAccount(user.getUsername(), request1);
-        CreateAccountResponse account2 = userClient.createAccount(user.getUsername(), request2);
+        CreateAccountResponse account1 = userClient.createAccount(user.username(), request1);
+        CreateAccountResponse account2 = userClient.createAccount(user.username(), request2);
 
-        ListAccountsResponse accounts = userClient.listAccounts(user.getUsername());
-        Assertions.assertEquals(2, accounts.getAccounts().size());
-        Assertions.assertEquals(account1.getName(), accounts.getAccounts().get(account1.getId()));
-        Assertions.assertEquals(account2.getName(), accounts.getAccounts().get(account2.getId()));
+        ListAccountsResponse accounts = userClient.listAccounts(user.username());
+        Assertions.assertEquals(2, accounts.accounts().size());
+        Assertions.assertEquals(account1.name(), accounts.accounts().get(account1.id()));
+        Assertions.assertEquals(account2.name(), accounts.accounts().get(account2.id()));
     }
 
     private CreateUserResponse createUser() {

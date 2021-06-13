@@ -39,15 +39,15 @@ public class UserController implements UserApi {
     public CreateUserResponse createUser(@PathVariable("username") String username,
                                          @RequestBody CreateUserRequest request) {
 
-        String passwordHash = passwordUtil.hashAndEncode(request.getPassword());
+        String passwordHash = passwordUtil.hashAndEncode(request.password());
 
         if (userRepository.existsByUsername(username)) {
             throw new IllegalArgumentException("This username is taken: " + username);
         }
 
         User user = new User(
-                request.getFirstName(),
-                request.getLastName(),
+                request.firstName(),
+                request.lastName(),
                 username,
                 passwordHash);
 
@@ -74,7 +74,7 @@ public class UserController implements UserApi {
             throw new IllegalArgumentException("This user does not exist: " + username);
         }
 
-        String name = request.getName();
+        String name = request.name();
         Account account = new Account(user, name);
 
         accountRepository.save(account);

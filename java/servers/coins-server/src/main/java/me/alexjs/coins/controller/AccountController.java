@@ -88,9 +88,9 @@ public class AccountController implements AccountApi {
 
         Account account = getAccountById(accountId);
 
-        String description = request.getDescription();
-        BigDecimal amount = convertAmount(request.getAmount());
-        BigDecimal oldBalance = getBalance(accountId).getBalance();
+        String description = request.description();
+        BigDecimal amount = convertAmount(request.amount());
+        BigDecimal oldBalance = getBalance(accountId).balance();
 
         Transaction transaction = new Transaction(account, description, type, amount, oldBalance);
         transaction.updateTotal(type, amount);

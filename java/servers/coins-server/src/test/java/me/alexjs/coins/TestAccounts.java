@@ -25,7 +25,7 @@ class TestAccounts extends CoinsTest {
     public void testGetBalance() {
         String accountId = createAccount().toString();
 
-        double balance = accountClient.getBalance(accountId).getBalance().doubleValue();
+        double balance = accountClient.getBalance(accountId).balance().doubleValue();
         Assertions.assertEquals(0.0d, balance);
     }
 
@@ -39,10 +39,10 @@ class TestAccounts extends CoinsTest {
         accountClient.createWithdrawal(accountId, new TransactionRequest("Withdrawal 1", String.valueOf(AMOUNT_2)));
         accountClient.createWithdrawal(accountId, new TransactionRequest("Withdrawal 2", String.valueOf(AMOUNT_2)));
 
-        double balance = accountClient.getBalance(accountId).getBalance().doubleValue();
+        double balance = accountClient.getBalance(accountId).balance().doubleValue();
         Assertions.assertEquals(AMOUNT_1 + AMOUNT_3 + AMOUNT_3 - AMOUNT_2 - AMOUNT_2, balance);
 
-        List<TransactionDto> transactions = accountClient.listTransactions(accountId).getTransactions();
+        List<TransactionDto> transactions = accountClient.listTransactions(accountId).transactions();
         Assertions.assertEquals(5, transactions.size());
 
         Assertions.assertEquals(AMOUNT_1, transactions.get(0).amount().doubleValue());
