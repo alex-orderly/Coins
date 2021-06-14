@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.UUID;
 
 @Transactional
 @SpringBootTest
@@ -20,6 +21,19 @@ class TestAccounts extends CoinsTest {
     public TestAccounts(UserApi userClient, AccountApi accountClient) {
         super(userClient, accountClient);
     }
+
+    @Test
+    public void testBadAccountId() {
+        String fakeId = UUID.randomUUID().toString();
+        TransactionRequest request = new TransactionRequest("Test transaction", String.valueOf(AMOUNT_1));
+
+        Assertions.assertThrows(RuntimeException.class, () -> accountClient.createWithdrawal(fakeId, request));
+        Assertions.assertThrows(RuntimeException.class, () -> accountClient.createDeposit(fakeId, request));
+        Assertions.assertThrows(RuntimeException.class, () -> accountClient.getBalance(fakeId));
+    }
+
+
+    /* Simple endpoint tests */
 
     @Test
     public void testGetBalance() {

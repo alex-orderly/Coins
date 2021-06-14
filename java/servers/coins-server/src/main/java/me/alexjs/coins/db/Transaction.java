@@ -8,8 +8,6 @@ import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.sql.Timestamp;
-import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -92,7 +90,7 @@ public class Transaction implements Serializable {
     /* SETTERS */
 
     public void updateTotal(TransactionType type, BigDecimal amount) {
-        switch(type) {
+        switch (type) {
             case DEPOSIT:
                 total = total.add(amount).setScale(6, RoundingMode.HALF_UP);
                 break;

@@ -31,6 +31,18 @@ class TestUsers extends CoinsTest {
         });
     }
 
+    @Test
+    public void testNoUserForCreateAccount() {
+        CreateAccountRequest request = new CreateAccountRequest(ACCOUNT_NAME_1);
+
+        Assertions.assertThrows(RuntimeException.class, () -> userClient.createAccount(USERNAME, request));
+    }
+
+    @Test
+    public void testNoUserForListAccounts() {
+        Assertions.assertThrows(RuntimeException.class, () -> userClient.listAccounts(USERNAME));
+    }
+
 
     /* Simple endpoint tests */
 

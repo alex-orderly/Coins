@@ -1,7 +1,7 @@
 package me.alexjs.coins.controller;
 
 import me.alexjs.coins.api.AccountApi;
-import me.alexjs.coins.api.dto.*;
+import me.alexjs.coins.api.dto.TransactionDto;
 import me.alexjs.coins.api.dto.body.*;
 import me.alexjs.coins.db.Account;
 import me.alexjs.coins.db.Transaction;
@@ -39,9 +39,10 @@ public class AccountController implements AccountApi {
     public GetBalanceResponse getBalance(@PathVariable("accountId") String accountId) {
 
         Account account = getAccountById(accountId);
-        try {
-            return new GetBalanceResponse(transactionRepository.findTopByAccountOrderByAudit_CreatedAtDesc(account).getTotal());
-        } catch (NullPointerException e) {
+        Transaction topAccount = transactionRepository.findTopByAccountOrderByAudit_CreatedAtDesc(account);
+        if (topAccount != null) {
+            return new GetBalanceResponse(topAccount.getTotal());
+        } else {
             return new GetBalanceResponse(BigDecimal.ZERO);
         }
 
@@ -55,7 +56,7 @@ public class AccountController implements AccountApi {
         List<Transaction> transactions = transactionRepository.findByAccount(account);
 
         List<TransactionDto> dtos = new ArrayList<>();
-        for(var transaction : transactions) {
+        for (Transaction transaction : transactions) {
             dtos.add(new TransactionDto(transaction.getType().getLabel(), transaction.getAmount(), transaction.getAudit().getCreatedAt().toInstant()));
         }
         dtos.sort(Comparator.comparing(TransactionDto::timestamp));
