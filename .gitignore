@@ -1,4 +1,5 @@
 HELP.md
+.DS_Store
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
@@ -13,3 +14,13 @@ build/
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+
+### VS Code ###
+.vscode
+
+
+### Web ###
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
