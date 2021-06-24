@@ -71,7 +71,7 @@ function Profile(props) {
 function Home(props) {
     return (
         <div class="row justify-content-center">
-            <div class="col-8">
+            <div class="col-6">
                 <h2 class="text-center my-4">Transactions</h2>
                 <table class="table table-responsive table-striped">
                     <TableHead />
@@ -86,11 +86,11 @@ function TableHead(props) {
     return (
         <thead>
             <tr>
-                <th scope="col">Date</th>
-                <th scope="col">Description</th>
-                <th scope="col">Deposit</th>
-                <th scope="col">Payment</th>
-                <th scope="col">Balance</th>
+                <th scope="col" class="text-center">Date</th>
+                <th scope="col" class="text-center">Description</th>
+                <th scope="col" class="text-center">Deposit</th>
+                <th scope="col" class="text-center">Payment</th>
+                <th scope="col" class="text-center">Balance</th>
             </tr>
         </thead>
     );
@@ -102,10 +102,10 @@ function TableBody(props) {
         rows[i] = (
             <tr>
                 <td>06/21/2021 {i}</td>
-                <td>My transaction</td>
-                <td></td>
-                <td>$100.00</td>
-                <td>$1,023.00</td>
+                <td>My super duper long transaction</td>
+                <td class="text-end"></td>
+                <td class="text-end">$100.00</td>
+                <th scope="row" class="text-end">$1,023.00</th>
             </tr>
         )
     }
