@@ -13,10 +13,8 @@ class App extends React.Component {
     render() {
         return (
             <>
-                <div class="container-fluid p-0">
-                    <Navbar />
-                    <Home />
-                </div>
+                <Navbar />
+                <Home />
             </>
         );
     }
@@ -28,34 +26,34 @@ class App extends React.Component {
 
 function Navbar(props) {
     return (
-        <nav class="navbar navbar-expand navbar-light bg-light px-5">
-            <Logo />
-            <NavLinks />
-            <Profile />
+        <nav className="navbar navbar-expand navbar-light bg-light px-5">
+            <div className="container-fluid">
+                <Logo href="#"/>
+                <NavLinks />
+                <Profile />
+            </div>
         </nav>
     );
 }
 
 function Logo(props) {
     return (
-        <a class="navbar-brand" href={props.href}>Coins</a>
+        <a className="navbar-brand" href={props.href}>Coins</a>
     )
 }
 
 function NavLinks(props) {
     return (
-        <div class="collapse navbar-collapse" id="coinsNav">
-            <div class="navbar-nav">
-                <NavLink href="/link1" label="Nav Link 1" />
-                <NavLink href="/link2" label="Nav Link 2" />
-            </div>
+        <div className="navbar-nav me-auto">
+            <NavLink href="#" label="Nav Link 1" />
+            <NavLink href="#" label="Nav Link 2" />
         </div>
     )
 }
 
 function NavLink(props) {
     return (
-        <a class="nav-link" href={props.href}>{props.label}</a>
+        <a className="nav-link" href={props.href}>{props.label}</a>
     )
 }
 
@@ -80,14 +78,29 @@ function Home(props) {
     const transactions = Array(10).fill(template);
 
     return (
-        <div class="row justify-content-center">
-            <div class="col-6">
-                <h2 class="text-center my-4">Transactions</h2>
-                <table class="table table-responsive table-striped">
-                    <TableHead />
-                    <TableBody transactions={transactions}/>
-                </table>
+        <div className="container-fluid">
+            <div className="row justify-content-center">
+                <div className="col-6">
+                    <AccountInfo />
+
+                    <hr />
+
+                    <h2 className="text-center my-4">Transactions</h2>
+
+                    <table className="table table-responsive table-striped">
+                        <TableHead />
+                        <TableBody transactions={transactions}/>
+                    </table>
+                </div>
             </div>
+        </div>
+    );
+}
+
+function AccountInfo(props) {
+    return (
+        <div>
+            
         </div>
     );
 }
@@ -96,11 +109,11 @@ function TableHead(props) {
     return (
         <thead>
             <tr>
-                <th scope="col" class="text-center">Date</th>
-                <th scope="col" class="text-center">Description</th>
-                <th scope="col" class="text-center">Deposit</th>
-                <th scope="col" class="text-center">Payment</th>
-                <th scope="col" class="text-center">Balance</th>
+                <th scope="col" className="text-center">Date</th>
+                <th scope="col" className="text-center">Description</th>
+                <th scope="col" className="text-center">Deposit</th>
+                <th scope="col" className="text-center">Payment</th>
+                <th scope="col" className="text-center">Balance</th>
             </tr>
         </thead>
     );
@@ -115,12 +128,12 @@ function TableBody(props) {
 
         let trans = props.transactions[i];
         rows[i] = (
-            <tr>
+            <tr key={i}>
                 <td>{trans.date}</td>
                 <td>{trans.desc}</td>
-                <td class="text-end">{trans.deposit ? '$' + trans.deposit : null}</td>
-                <td class="text-end">{trans.payment ? '$' + trans.payment : null}</td>
-                <th scope="row" class="text-end">${trans.balance}</th>
+                <td className="text-end">{trans.deposit ? '$' + trans.deposit : null}</td>
+                <td className="text-end">{trans.payment ? '$' + trans.payment : null}</td>
+                <th className="text-end">${trans.balance}</th>
             </tr>
         )
 
