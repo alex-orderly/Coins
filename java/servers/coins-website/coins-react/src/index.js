@@ -69,13 +69,23 @@ function Profile(props) {
 /* HOME */
 
 function Home(props) {
+    const template = {
+        date: '06/23/2021',
+        desc: 'My transaction',
+        deposit: null,
+        payment: '40.20',
+        balance: '1023.69'
+    }
+
+    const transactions = Array(10).fill(template);
+
     return (
         <div class="row justify-content-center">
             <div class="col-6">
                 <h2 class="text-center my-4">Transactions</h2>
                 <table class="table table-responsive table-striped">
                     <TableHead />
-                    <TableBody />
+                    <TableBody transactions={transactions}/>
                 </table>
             </div>
         </div>
@@ -97,23 +107,31 @@ function TableHead(props) {
 }
 
 function TableBody(props) {
-    let rows = Array(10).fill(null);
-    for (let i = 0; i < 10; i++) {
+
+    let totalTransactions = props.transactions.length;
+    let rows = Array(totalTransactions).fill(null);
+
+    for (let i = 0; i < totalTransactions; i++) {
+
+        let trans = props.transactions[i];
         rows[i] = (
             <tr>
-                <td>06/21/2021 {i}</td>
-                <td>My super duper long transaction</td>
-                <td class="text-end"></td>
-                <td class="text-end">$100.00</td>
-                <th scope="row" class="text-end">$1,023.00</th>
+                <td>{trans.date}</td>
+                <td>{trans.desc}</td>
+                <td class="text-end">{trans.deposit ? '$' + trans.deposit : null}</td>
+                <td class="text-end">{trans.payment ? '$' + trans.payment : null}</td>
+                <th scope="row" class="text-end">${trans.balance}</th>
             </tr>
         )
+
     }
+
     return (
         <tbody>
             {rows}
         </tbody>
     );
+
 }
 
 
