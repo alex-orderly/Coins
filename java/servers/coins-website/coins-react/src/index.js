@@ -67,6 +67,10 @@ function Profile(props) {
 /* HOME */
 
 function Home(props) {
+    const account = {
+        name: "My Checking Account"
+    }
+
     const template = {
         date: '06/23/2021',
         desc: 'My transaction',
@@ -75,22 +79,30 @@ function Home(props) {
         balance: '1023.69'
     }
 
-    const transactions = Array(10).fill(template);
+    const transactions = Array(20).fill(template);
 
     return (
         <div className="container-fluid">
             <div className="row justify-content-center">
                 <div className="col-6">
-                    <AccountInfo />
+
+                    <div className="container my-4">
+                        <AccountInfo account={account} />
+                        <NewTransactionForm />
+                    </div>
 
                     <hr />
 
-                    <h2 className="text-center my-4">Transactions</h2>
+                    <div className="container my-4">
+                        <h2 className="text-center my-4">Transactions</h2>
 
-                    <table className="table table-responsive table-striped">
-                        <TableHead />
-                        <TableBody transactions={transactions}/>
-                    </table>
+                        <table className="table table-responsive table-striped">
+                            <TableHead />
+                            <TableBody transactions={transactions}/>
+                            
+                        </table>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -99,8 +111,33 @@ function Home(props) {
 
 function AccountInfo(props) {
     return (
-        <div>
-            
+        <h3 className="text-center">Account: {props.account.name}</h3>
+    );
+}
+
+function NewTransactionForm(props) {
+    const dateParts = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
+    const dateString = dateParts[4].value + '-' + dateParts[0].value + '-' + dateParts[2].value;
+    return (
+        <div className="container my-4">
+            <h4>New Transaction</h4>
+            <form>
+                <div class="mb-3">
+                    <label for="formDate" class="form-label">Date</label>
+                    <input type="date" class="form-control" id="formDate" value={dateString} />
+                </div>
+                <div class="mb-3">
+                    <label for="formDescription" class="form-label">Description</label>
+                    <input class="form-control" id="formDescription" />
+                </div>
+                <div class="mb-3">
+                    <label for="formAmount" class="form-label">Amount</label>
+                    <input class="form-control" id="formAmount" pattern="[0-9]+(.[0-9]{0,2})?" />
+                </div>
+                <div class="mb-3">
+                    <button class="btn btn-primary" type="submit">Submit form</button>
+                </div>
+            </form>
         </div>
     );
 }
