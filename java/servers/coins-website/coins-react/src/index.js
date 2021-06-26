@@ -1,7 +1,7 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './bootstrap-yeti.css'
-// import './bootstrap.css'
+import React from "react";
+import ReactDOM from "react-dom";
+import "./bootstrap-yeti.css"
+// import "./bootstrap.css"
 
 
 class App extends React.Component {
@@ -28,10 +28,10 @@ class App extends React.Component {
 function Navbar(props) {
     return (
         <nav className="navbar navbar-expand navbar-dark bg-dark px-5">
-            <div className="container-fluid">
+            <div className="container-fluid w-75">
                 <Logo href="#"/>
                 <NavLinks />
-                <Profile />
+                <Profile href="#" label="Profile"/>
             </div>
         </nav>
     );
@@ -54,13 +54,15 @@ function NavLinks(props) {
 
 function NavLink(props) {
     return (
-        <a className="nav-link" href={props.href}>{props.label}</a>
+        <a className="nav-link me-1" href={props.href}>{props.label}</a>
     )
 }
 
 function Profile(props) {
     return (
-        <div></div>
+        <div className="navbar-nav me-0">
+            <a className="nav-link me-0" href={props.href}>{props.label}</a>
+        </div>
     )
 }
 
@@ -73,11 +75,11 @@ function Home(props) {
     }
 
     const template = {
-        date: '06/23/2021',
-        desc: 'My transaction',
+        date: "06/23/2021",
+        desc: "My transaction",
         deposit: null,
-        payment: '4.20',
-        balance: '1023.69'
+        payment: "4.20",
+        balance: "1023.69"
     }
 
     const transactions = Array(20).fill(template);
@@ -90,11 +92,9 @@ function Home(props) {
                     <div className="container my-4">
                         <AccountInfo account={account} />
                         <NewTransactionForm />
-                    </div>
 
-                    <hr />
+                        <hr />
 
-                    <div className="container my-4">
                         <h2 className="text-center my-4">Transactions</h2>
 
                         <table className="table table-responsive table-striped">
@@ -119,11 +119,11 @@ function AccountInfo(props) {
 function NewTransactionForm(props) {
 
     function handleSubmit(e) {
-        console.log("Submitted form with event: " + e);
+        console.log("Submitted form with event: ", e);
     }
 
     const dateParts = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
-    const dateString = dateParts[4].value + '-' + dateParts[0].value + '-' + dateParts[2].value;
+    const dateString = dateParts[4].value + "-" + dateParts[0].value + "-" + dateParts[2].value;
 
     return (
         <div className="container my-4">
@@ -133,16 +133,16 @@ function NewTransactionForm(props) {
                 <label className="form-label">Description</label>
                 <div className="input-group mb-3">
                     <div className="col-3">
-                        <input type="date" className="form-control" id="formDate" defaultValue={dateString} />
+                        <input type="date" className="form-control" name="date" defaultValue={dateString} required />
                     </div>
 
-                    <input type="text" className="form-control" id="formDescription" placeholder="Groceries" />
+                    <input type="text" className="form-control" name="description" placeholder="Groceries" required />
                 </div>
 
                 <label className="form-label">Amount</label>
                 <div className="input-group mb-3">
                     <div className="col-3">
-                        <select className="form-select" id="formTransactionType">
+                        <select className="form-select" name="transactionType" required>
                             <option value="deposit" defaultValue>Deposit</option>
                             <option value="payment">Payment</option>
                         </select>
@@ -150,7 +150,7 @@ function NewTransactionForm(props) {
 
                     <span className="input-group-text">$</span>
 
-                    <input type="text" className="form-control" id="formAmount" pattern="[0-9]+(.[0-9]{0,2})?" />
+                    <input className="form-control" type="number" step="0.01" name="amount" required />
 
                     <button className="btn btn-primary" type="submit">Create Transaction</button>
                 </div>
@@ -186,8 +186,8 @@ function TableBody(props) {
             <tr key={i}>
                 <td>{trans.date}</td>
                 <td>{trans.desc}</td>
-                <td className="text-end">{trans.deposit ? '$' + trans.deposit : null}</td>
-                <td className="text-end">{trans.payment ? '$' + trans.payment : null}</td>
+                <td className="text-end">{trans.deposit ? "$" + trans.deposit : null}</td>
+                <td className="text-end">{trans.payment ? "$" + trans.payment : null}</td>
                 <th className="text-end">${trans.balance}</th>
             </tr>
         )
@@ -207,5 +207,5 @@ function TableBody(props) {
 
 ReactDOM.render(
     <App />,
-    document.getElementById('root')
+    document.getElementById("root")
 );
