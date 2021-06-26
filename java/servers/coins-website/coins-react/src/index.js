@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './bootstrap-yeti.css'
+// import './bootstrap.css'
 
 
 class App extends React.Component {
@@ -26,7 +27,7 @@ class App extends React.Component {
 
 function Navbar(props) {
     return (
-        <nav className="navbar navbar-expand navbar-light bg-light px-5">
+        <nav className="navbar navbar-expand navbar-dark bg-dark px-5">
             <div className="container-fluid">
                 <Logo href="#"/>
                 <NavLinks />
@@ -75,7 +76,7 @@ function Home(props) {
         date: '06/23/2021',
         desc: 'My transaction',
         deposit: null,
-        payment: '40.20',
+        payment: '4.20',
         balance: '1023.69'
     }
 
@@ -84,7 +85,7 @@ function Home(props) {
     return (
         <div className="container-fluid">
             <div className="row justify-content-center">
-                <div className="col-6">
+                <div className="col-7">
 
                     <div className="container my-4">
                         <AccountInfo account={account} />
@@ -116,27 +117,44 @@ function AccountInfo(props) {
 }
 
 function NewTransactionForm(props) {
+
+    function handleSubmit(e) {
+        console.log("Submitted form with event: " + e);
+    }
+
     const dateParts = new Intl.DateTimeFormat("en-US", { year: "numeric", month: "2-digit", day: "2-digit" }).formatToParts(new Date());
     const dateString = dateParts[4].value + '-' + dateParts[0].value + '-' + dateParts[2].value;
+
     return (
         <div className="container my-4">
             <h4>New Transaction</h4>
-            <form>
-                <div class="mb-3">
-                    <label for="formDate" class="form-label">Date</label>
-                    <input type="date" class="form-control" id="formDate" value={dateString} />
+            <form onSubmit={handleSubmit}>
+
+                <label className="form-label">Description</label>
+                <div className="input-group mb-3">
+                    <div className="col-3">
+                        <input type="date" className="form-control" id="formDate" defaultValue={dateString} />
+                    </div>
+
+                    <input type="text" className="form-control" id="formDescription" placeholder="Groceries" />
                 </div>
-                <div class="mb-3">
-                    <label for="formDescription" class="form-label">Description</label>
-                    <input class="form-control" id="formDescription" />
+
+                <label className="form-label">Amount</label>
+                <div className="input-group mb-3">
+                    <div className="col-3">
+                        <select className="form-select" id="formTransactionType">
+                            <option value="deposit" defaultValue>Deposit</option>
+                            <option value="payment">Payment</option>
+                        </select>
+                    </div>
+
+                    <span className="input-group-text">$</span>
+
+                    <input type="text" className="form-control" id="formAmount" pattern="[0-9]+(.[0-9]{0,2})?" />
+
+                    <button className="btn btn-primary" type="submit">Create Transaction</button>
                 </div>
-                <div class="mb-3">
-                    <label for="formAmount" class="form-label">Amount</label>
-                    <input class="form-control" id="formAmount" pattern="[0-9]+(.[0-9]{0,2})?" />
-                </div>
-                <div class="mb-3">
-                    <button class="btn btn-primary" type="submit">Submit form</button>
-                </div>
+
             </form>
         </div>
     );
